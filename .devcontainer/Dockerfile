@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     neofetch \
     openjdk-17-jre \
     openjdk-17-jdk \
+    openssh-client \
   && rm -rf /var/lib/apt/lists/*
 
 # Create workspace directory
