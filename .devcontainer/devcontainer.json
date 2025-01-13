@@ -1,5 +1,5 @@
 {
-  "name": "CloneApp Development Environment",
+  "name": "Flutter Development Environment",
   "build": {
     "dockerfile": "Dockerfile"
   },
