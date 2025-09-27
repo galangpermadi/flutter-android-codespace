@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglu1-mesa \
     openjdk-17-jre \
     openjdk-17-jdk \
+    xz-utils \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 # Environment variables
@@ -20,10 +22,10 @@ ENV ANDROID_HOME=/usr/local/android-sdk
 ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/34.0.0:${PATH}"
 ENV GRADLE_HOME=/usr/local/gradle
 ENV PATH="${GRADLE_HOME}/gradle-8.1/bin:${PATH}"
+ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
-# Install Flutter
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
-ENV PATH="/usr/local/flutter/bin:${PATH}"
+# Install Flutter (stable branch)
+RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter -b stable --depth 1
 
 # Install Gradle
 RUN wget https://services.gradle.org/distributions/gradle-8.1-bin.zip && \
@@ -39,6 +41,11 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     yes | sdkmanager --licenses && \
     sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-# Run Flutter doctor to verify installation
-RUN flutter doctor
+# Create non-root user for Flutter
+RUN useradd -ms /bin/bash flutteruser
+USER flutteruser
+WORKDIR /home/flutteruser
 
+# Clear old cache and run Flutter doctor
+RUN rm -rf /usr/local/flutter/bin/cache && flutter precache
+RUN flutter doctor
