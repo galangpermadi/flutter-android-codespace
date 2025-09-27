@@ -41,16 +41,9 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     yes | sdkmanager --licenses && \
     sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-# Create non-root user for Flutter
-RUN useradd -ms /bin/bash flutteruser
+# Give Codespace user (UID 1000) access to flutter
+RUN chown -R 1000:1000 /usr/local/flutter
 
-# Change ownership so flutteruser can access Flutter SDK
-RUN chown -R flutteruser:flutteruser /usr/local/flutter
-
-# Switch to flutteruser
-USER flutteruser
-WORKDIR /home/flutteruser
-
-# Clear old cache and run Flutter doctor
-RUN rm -rf /usr/local/flutter/bin/cache && flutter precache
-RUN flutter doctor
+# Pre-cache flutter SDK (run as root during build)
+RUN rm -rf /usr/local/flutter/bin/cache && /usr/local/flutter/bin/flutter precache
+RUN /usr/local/flutter/bin/flutter doctor
