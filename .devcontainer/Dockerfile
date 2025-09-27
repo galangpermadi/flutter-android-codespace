@@ -39,9 +39,6 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     yes | sdkmanager --licenses && \
     sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-# Install AI libraries (Coqui, TensorFlow Lite, MediaPipe, OpenAI Whisper)
-RUN pip3 install coqui-tts==0.11.0 openai-whisper tensorflow mediapipe
-
 # Run Flutter doctor to verify installation
 RUN flutter doctor
 
