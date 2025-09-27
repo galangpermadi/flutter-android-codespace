@@ -43,6 +43,11 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
 
 # Create non-root user for Flutter
 RUN useradd -ms /bin/bash flutteruser
+
+# Change ownership so flutteruser can access Flutter SDK
+RUN chown -R flutteruser:flutteruser /usr/local/flutter
+
+# Switch to flutteruser
 USER flutteruser
 WORKDIR /home/flutteruser
 
