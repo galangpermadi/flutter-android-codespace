@@ -1,40 +1,21 @@
-FROM ubuntu:22.04
+FROM mcr.microsoft.com/devcontainers/universal:latest
+
 SHELL ["/bin/bash", "-c"]
 
 # =============================
-# 1. Install dependencies dasar
+# 1. Install dependencies tambahan
 # =============================
-RUN apt-get update && apt-get install -y \
-    curl wget unzip git zip xz-utils sudo \
-    build-essential ca-certificates gnupg lsb-release \
-    openjdk-17-jdk \
+RUN sudo apt-get update && sudo apt-get install -y \
     libglu1-mesa \
-    software-properties-common \
-    && rm -rf /var/lib/apt/lists/*
+    unzip xz-utils \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 # =============================
-# 2. Set JAVA_HOME
+# 2. Install Flutter & Android SDK
 # =============================
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-
-# =============================
-# 3. Install Node.js & global tools
-# =============================
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g pnpm@8.15.4 @ionic/cli firebase-tools
-
-# =============================
-# 4. Buat user non-root "codespace"
-# =============================
-RUN useradd -ms /bin/bash codespace \
-    && echo "codespace ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER codespace
 WORKDIR /home/codespace
 
-# =============================
-# 5. Install Flutter & Android SDK
-# =============================
 ENV ANDROID_HOME=/home/codespace/androidsdk \
     FLUTTER_VERSION=3.19.6-stable \
     QTWEBENGINE_DISABLE_SANDBOX=1
@@ -56,7 +37,7 @@ RUN wget -q "https://storage.googleapis.com/flutter_infra_release/releases/stabl
     && flutter doctor
 
 # =============================
-# 6. Install Gradle (versi terbaru)
+# 3. Install Gradle (versi terbaru)
 # =============================
 ENV GRADLE_HOME=/opt/gradle
 ENV PATH=${GRADLE_HOME}/bin:${PATH}
