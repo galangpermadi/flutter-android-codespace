@@ -1,17 +1,17 @@
 {
-  "name": "Flutter Development Environment",
+  "name": "Flutter Android Dev (Universal)",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
-  },
-  "extensions": [
-    "Dart-Code.flutter",
-    "redhat.java",
-    "vscjava.vscode-java-pack",
-    "esbenp.prettier-vscode"
-  ],
-  "postCreateCommand": "flutter doctor && gradle -v && sdkmanager --list",
-  "remoteUser": "codespace"
+  "remoteUser": "codespace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Dart-Code.flutter",
+        "Dart-Code.dart-code",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
 }
