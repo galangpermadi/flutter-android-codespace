@@ -19,7 +19,7 @@ WORKDIR /home/codespace
 ENV ANDROID_HOME=/home/codespace/androidsdk \
     FLUTTER_VERSION=3.19.6-stable \
     QTWEBENGINE_DISABLE_SANDBOX=1
-ENV PATH="/home/codespace/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+ENV PATH="/home/codespace/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:${PATH}"
 
 RUN wget -q "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}.tar.xz" -O - \
     | tar xpJ -C "/home/codespace" \
