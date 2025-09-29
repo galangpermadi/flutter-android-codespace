@@ -4,9 +4,6 @@
     "dockerfile": "Dockerfile"
   },
   "remoteUser": "codespace",
-  "containerEnv": {
-    "PATH": "/home/codespace/flutter/bin:/home/codespace/androidsdk/emulator:/home/codespace/androidsdk/tools:/home/codespace/androidsdk/cmdline-tools/latest/bin:/home/codespace/androidsdk/platform-tools:${PATH}"
-  },
   "customizations": {
     "vscode": {
       "extensions": [
