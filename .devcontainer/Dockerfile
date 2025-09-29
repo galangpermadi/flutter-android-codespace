@@ -20,9 +20,9 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 # =============================
 # 3. Install Chrome
 # =============================
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && apt-get install -y ./google-chrome-stable_current_amd64.deb \
-    && rm google-chrome-stable_current_amd64.deb
+# RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+#     && apt-get install -y ./google-chrome-stable_current_amd64.deb \
+#     && rm google-chrome-stable_current_amd64.deb
 
 # =============================
 # 4. Install AWS CLI v2
