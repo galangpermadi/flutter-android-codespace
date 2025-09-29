@@ -45,7 +45,3 @@ RUN wget -q https://services.gradle.org/distributions/gradle-8.10.2-bin.zip -O g
     && sudo unzip -d /opt gradle.zip \
     && sudo mv /opt/gradle-* /opt/gradle \
     && rm gradle.zip
-
-# Link flutter ke /usr/local/bin supaya selalu ada di PATH
-RUN sudo ln -s /usr/local/flutter/bin/flutter /usr/local/bin/flutter \
-    && sudo ln -s /usr/local/flutter/bin/dart /usr/local/bin/dart
