@@ -1,49 +1,52 @@
-# Base image
-FROM ubuntu:22.04
+FROM gitpod/workspace-full-vnc
+SHELL ["/bin/bash", "-c"]
 
-# Install essential tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    wget \
-    git \
-    curl \
-    unzip \
-    nano \
-    python3-pip \
-    libglu1-mesa \
-    openjdk-17-jre \
-    openjdk-17-jdk \
-    xz-utils \
-    zip \
-    && rm -rf /var/lib/apt/lists/*
+# Set JAVA_HOME
+ENV JAVA_HOME="$HOME/.sdkman/candidates/java/current"
 
-# Environment variables
-ENV ANDROID_HOME=/usr/local/android-sdk
-ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/34.0.0:${PATH}"
-ENV GRADLE_HOME=/usr/local/gradle
-ENV PATH="${GRADLE_HOME}/gradle-8.1/bin:${PATH}"
-ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
+# Install java 17 via sdkman
+RUN source "$HOME/.sdkman/bin/sdkman-init.sh" \
+    && sdk install java 17.0.11.fx-zulu \
+    && sdk default java 17.0.11.fx-zulu
 
-# Install Flutter (stable branch)
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter -b stable --depth 1
+ENV ANDROID_HOME=$HOME/androidsdk \
+    FLUTTER_VERSION=3.19.6-stable \
+    QTWEBENGINE_DISABLE_SANDBOX=1
+ENV PATH="$HOME/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
 
-# Install Gradle
-RUN wget https://services.gradle.org/distributions/gradle-8.1-bin.zip && \
-    unzip gradle-8.1-bin.zip -d /usr/local/gradle && \
-    rm gradle-8.1-bin.zip
+# Install Open JDK for android and other dependencies
+USER root
+# install chrome
+RUN apt-get install -y wget
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
-# Install Android SDK
-RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
-    wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdline-tools.zip && \
-    unzip /tmp/cmdline-tools.zip -d ${ANDROID_HOME}/cmdline-tools && \
-    rm /tmp/cmdline-tools.zip && \
-    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest && \
-    yes | sdkmanager --licenses && \
-    sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+&& unzip awscliv2.zip \
+&& ./aws/install
 
-# Give Codespace user (UID 1000) access to flutter
-RUN chown -R 1000:1000 /usr/local/flutter
+# Make some changes for our vnc client and flutter chrome
+# RUN sed -i 's|resize=scale|resize=remote|g' /opt/novnc/index.html \
+#     && _gc_path="$(command -v google-chrome)" \
+#     && rm "$_gc_path" && printf '%s\n' '#!/usr/bin/env bash' \
+#                                         'chromium --start-fullscreen "$@"' > "$_gc_path" \
+#     && chmod +x "$_gc_path" 
 
-# Pre-cache flutter SDK (run as root during build)
-RUN rm -rf /usr/local/flutter/bin/cache && /usr/local/flutter/bin/flutter precache
-RUN /usr/local/flutter/bin/flutter doctor
+# Insall flutter and dependencies
+USER gitpod
+RUN npm uninstall -g pnpm && npm install -g pnpm@8.15.4
+RUN npm i -g @ionic/cli
+RUN npm i -g firebase-tools
+
+RUN wget -q "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}.tar.xz" -O - \
+    | tar xpJ -C "$HOME" \
+    && _file_name="commandlinetools-linux-8092744_latest.zip" && wget "https://dl.google.com/android/repository/$_file_name" \
+    && unzip "$_file_name" -d $ANDROID_HOME \
+    && rm -f "$_file_name" \
+    && mkdir -p $ANDROID_HOME/cmdline-tools/latest \
+    && mv $ANDROID_HOME/cmdline-tools/{bin,lib} $ANDROID_HOME/cmdline-tools/latest \
+    && yes | sdkmanager "platform-tools" "build-tools;31.0.0" "platforms;android-31" \
+    && flutter precache && for _plat in web linux-desktop; do flutter config --enable-${_plat}; done \
+    && flutter config --android-sdk $ANDROID_HOME \
+    && yes | flutter doctor --android-licenses \
+    && flutter doctor
