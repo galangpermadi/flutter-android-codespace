@@ -27,10 +27,10 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 # =============================
 # 4. Install AWS CLI v2
 # =============================
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && ./aws/install \
-    && rm -rf awscliv2.zip aws
+# RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+#     && unzip awscliv2.zip \
+#     && ./aws/install \
+#     && rm -rf awscliv2.zip aws
 
 # =============================
 # 5. Install Node.js & global tools
