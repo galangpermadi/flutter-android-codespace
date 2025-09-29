@@ -23,7 +23,7 @@ ENV PATH="/home/codespace/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools
 
 RUN wget -q "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}.tar.xz" -O - \
     | tar xpJ -C "/home/codespace" \
-    && _file_name="commandlinetools-linux-8092744_latest.zip" \
+    && _file_name="commandlinetools-linux-13114758_latest.zip" \
     && wget "https://dl.google.com/android/repository/$_file_name" \
     && unzip "$_file_name" -d $ANDROID_HOME \
     && rm -f "$_file_name" \
