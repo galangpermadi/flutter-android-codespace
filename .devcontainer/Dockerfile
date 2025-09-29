@@ -18,45 +18,30 @@ RUN apt-get update && apt-get install -y \
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # =============================
-# 3. Install Chrome
-# =============================
-# RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-#     && apt-get install -y ./google-chrome-stable_current_amd64.deb \
-#     && rm google-chrome-stable_current_amd64.deb
-
-# =============================
-# 4. Install AWS CLI v2
-# =============================
-# RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-#     && unzip awscliv2.zip \
-#     && ./aws/install \
-#     && rm -rf awscliv2.zip aws
-
-# =============================
-# 5. Install Node.js & global tools
+# 3. Install Node.js & global tools
 # =============================
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g pnpm@8.15.4 @ionic/cli firebase-tools
 
 # =============================
-# 6. Buat user non-root "developer"
+# 4. Buat user non-root "codespace"
 # =============================
-RUN useradd -ms /bin/bash developer && \
-    echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-USER developer
-WORKDIR /home/developer
+RUN useradd -ms /bin/bash codespace \
+    && echo "codespace ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER codespace
+WORKDIR /home/codespace
 
 # =============================
-# 7. Install Flutter & Android SDK
+# 5. Install Flutter & Android SDK
 # =============================
-ENV ANDROID_HOME=/home/developer/androidsdk \
+ENV ANDROID_HOME=/home/codespace/androidsdk \
     FLUTTER_VERSION=3.19.6-stable \
     QTWEBENGINE_DISABLE_SANDBOX=1
-ENV PATH="/home/developer/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+ENV PATH="/home/codespace/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
 
 RUN wget -q "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}.tar.xz" -O - \
-    | tar xpJ -C "/home/developer" \
+    | tar xpJ -C "/home/codespace" \
     && _file_name="commandlinetools-linux-8092744_latest.zip" \
     && wget "https://dl.google.com/android/repository/$_file_name" \
     && unzip "$_file_name" -d $ANDROID_HOME \
