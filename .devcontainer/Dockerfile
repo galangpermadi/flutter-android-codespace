@@ -54,3 +54,13 @@ RUN wget -q "https://storage.googleapis.com/flutter_infra_release/releases/stabl
     && flutter config --android-sdk $ANDROID_HOME \
     && yes | flutter doctor --android-licenses \
     && flutter doctor
+
+# =============================
+# 6. Install Gradle (versi terbaru)
+# =============================
+ENV GRADLE_HOME=/opt/gradle
+ENV PATH=${GRADLE_HOME}/bin:${PATH}
+RUN wget -q https://services.gradle.org/distributions/gradle-8.10.2-bin.zip -O gradle.zip \
+    && sudo unzip -d /opt gradle.zip \
+    && sudo mv /opt/gradle-* /opt/gradle \
+    && rm gradle.zip
