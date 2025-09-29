@@ -4,6 +4,7 @@
     "dockerfile": "Dockerfile"
   },
   "remoteUser": "codespace",
+  "postCreateCommand": "echo 'export PATH=$HOME/flutter/bin:$HOME/androidsdk/emulator:$HOME/androidsdk/tools:$HOME/androidsdk/cmdline-tools/latest/bin:$HOME/androidsdk/platform-tools:$PATH' >> ~/.bashrc",
   "customizations": {
     "vscode": {
       "extensions": [
