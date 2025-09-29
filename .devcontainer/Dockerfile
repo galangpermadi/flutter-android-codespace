@@ -17,7 +17,7 @@ USER codespace
 WORKDIR /home/codespace
 
 ENV ANDROID_HOME=/home/codespace/androidsdk \
-    FLUTTER_VERSION=3.19.6-stable \
+    FLUTTER_VERSION=3.35.4-stable \
     QTWEBENGINE_DISABLE_SANDBOX=1
 ENV PATH="/home/codespace/flutter/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:${PATH}"
 
